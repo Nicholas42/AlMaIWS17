@@ -1,0 +1,36 @@
+#include <iostream>
+
+struct Stab{
+  short *content;
+  short k;
+}
+
+  void bewege(Stab *A, Stab *B, Stab *C, short n, short m){
+  if (n>0){
+    bewege(A, C, B, n-1);
+    C->content[C->k] = A->content[A->k];
+    C->k++;
+    A->k--;
+    bewege(B, A, C, n-1);
+  }
+}
+
+void print(Stab *A, Stab *B, Stab *C, short m){
+  for(short i = 0; i < n; i++){
+    
+  }
+}
+
+int main(){
+  short n = 6;
+  Stab A, B, C;
+  A->content = new short[n];
+  A->k = n-1;
+  B->content = new short[n];
+  B->k = -1;
+  C->content = new short[n];
+  C->k = -1;
+  for(short i = 1; i <= n; i++){
+    A->content[n-i] = i;
+  }
+}
