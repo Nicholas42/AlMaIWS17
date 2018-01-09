@@ -47,12 +47,14 @@ void add_edge(graph *g, int v1, int v2, double w)
 	t->next = g->nodes[index(v1)];
 	t->weight = w;
 	g->nodes[index(v1)] = t;
+	g->edge_count += 1;
 }
 
 struct graph *init(int size)
 {
 	struct graph *g = new struct graph();
 	g->node_count = size;
+	g->edge_count = 0;
 	g->nodes = new edge *[size];
 	for (int i = 0; i < size; i++)
 	{
@@ -61,11 +63,13 @@ struct graph *init(int size)
 	return g;
 }
 
+const double default_weight = 0.0;
+
 struct graph *read_edges_file(string filename)
 {
 	struct graph *g;
 	string line;
-	int node_count;
+	int node_count, edge_count;
 
 	//Öffne Datei und prüfe auf Erfolg
 	ifstream myfile(filename);
@@ -78,9 +82,9 @@ struct graph *read_edges_file(string filename)
 
 	//Lese Anzahl Kanten
 	getline(myfile, line);
-	g->edge_count = stoi(line);
+	edge_count = stoi(line);
 
-	for (int i = 0; i < g->edge_count; i++)
+	for (int i = 0; i < edge_count; i++)
 	{
 		//Lese eine Kante ein
 		int a, b;
@@ -94,10 +98,11 @@ struct graph *read_edges_file(string filename)
 		//Versuche noch ein Gewicht zu lesen, falls keins dasteht, nehme 0.0
 		ss >> w;
 		if(!ss){
-		  w = 0.0;
+		  w = default_weight;
 		}
 		add_edge(g, a, b, w);
 	};
+	assert(edge_count == g->edge_count);
 	myfile.close();
 	return g;
 }
@@ -115,8 +120,8 @@ void write_edges_file(string filename, graph *g)
 	{
 		for (edge *t = g->nodes[i]; t != nullptr; t = t->next)
 		{
-			out << i + 1 << " " << t->target << endl;
-			cout << i + 1 << " " << t->target << endl;
+			out << i + 1 << " " << t->target << " " << t->weight << endl;
+			cout << i + 1 << " " << t->target << " " << t->weight << endl;
 		}
 	}
 	out.close();
