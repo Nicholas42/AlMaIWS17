@@ -22,6 +22,10 @@ struct edge
 {
 	int target;
 	double weight;
+	double f;
+
+	bool gegen;
+	edge *gegenkante;
 
 	//Nächste Kante in der Adjazenzliste
 	struct edge *next;
@@ -30,6 +34,27 @@ struct edge
 int index(int v)
 {
 	return (v - 1);
+}
+
+void add_gegenedge(graph *g, int v1, int v2, double w, edge *e){
+	//Prüfe Indizes auf Korrektheit
+	assert(v1 >= 1 && v2 >= 1);
+	assert(v1 <= g->node_count && v2 <= g->node_count);
+
+	//Wir wollen keine Loops
+	assert(v1 != v2);
+
+	edge *t;
+	t = new struct edge();
+	t->target = v2;
+	t->next = g->nodes[index(v1)];
+	t->weight = w;
+	t->f = 0;
+	t->gegen = true;
+	t->gegenkante = e;
+	e->gegenkante = t;
+	g->nodes[index(v1)] = t;
+	g->edge_count += 1;
 }
 
 void add_edge(graph *g, int v1, int v2, double w)
@@ -46,6 +71,9 @@ void add_edge(graph *g, int v1, int v2, double w)
 	t->target = v2;
 	t->next = g->nodes[index(v1)];
 	t->weight = w;
+	t->f = 0;
+	t->gegen = false;
+	t->gegenkante = nullptr;
 	g->nodes[index(v1)] = t;
 	g->edge_count += 1;
 }
